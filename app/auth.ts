@@ -2,8 +2,8 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { UserData } from "@/app/_dtos/user-data";
 
-const apiUrl = process.env.IP_GEO_API_URL || "http://localhost:5069";
-export const {handlers, signIn, signOut, auth }= NextAuth({
+const apiUrl = process.env.IP_GEO_API_URL || "http://localhost:5069/";
+export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     CredentialsProvider({
       credentials: {
@@ -37,7 +37,7 @@ export const {handlers, signIn, signOut, auth }= NextAuth({
           }
           return null;
         } catch (error) {
-            console.error("Error during authentication:", error);
+          console.error("Error during authentication:", error);
           return null;
         }
       },
