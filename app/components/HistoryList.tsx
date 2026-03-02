@@ -15,15 +15,25 @@ interface HistoryListProps {
   onClickItem: (item: HistoryItem) => void;
 }
 
-const HistoryList: React.FC<HistoryListProps> = ({ items, selectedIds, onSelect, onClickItem }) => (
-  <div className="border rounded p-2 bg-white">
-    {items.length === 0 && <div className="text-gray-500">No history found.</div>}
-    {items.map(item => (
-      <div key={item.id} className="flex items-center border-b last:border-b-0 py-2 hover:bg-gray-50 cursor-pointer">
+const HistoryList: React.FC<HistoryListProps> = ({
+  items,
+  selectedIds,
+  onSelect,
+  onClickItem,
+}) => (
+  <div className="border rounded p-2 bg-white w-full">
+    {items.length === 0 && (
+      <div className="text-gray-500">No history found.</div>
+    )}
+    {items.map((item) => (
+      <div
+        key={item.id}
+        className="flex items-center border-b last:border-b-0 py-2 hover:bg-gray-50 cursor-pointer"
+      >
         <input
           type="checkbox"
           checked={selectedIds.has(item.id)}
-          onChange={e => onSelect(item.id, e.target.checked)}
+          onChange={(e) => onSelect(item.id, e.target.checked)}
           className="mr-2"
         />
         <div className="flex-1" onClick={() => onClickItem(item)}>

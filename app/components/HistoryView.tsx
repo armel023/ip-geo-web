@@ -5,10 +5,14 @@ import { GeoInfo } from "./IGeoInfo";
 import { mapIpInfoJson } from "./mapIpInfoJson";
 
 interface HistoryViewProps {
-    onClickItem: (geoInfo: GeoInfo) => void;
+  searchIp?: string;
+  onClickItem: (geoInfo: GeoInfo) => void;
 }
 
-export default function HistoryView({ onClickItem }: HistoryViewProps) {
+export default function HistoryView({
+  searchIp,
+  onClickItem,
+}: HistoryViewProps) {
   const [items, setItems] = useState<HistoryItem[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [showDelete, setShowDelete] = useState(false);
@@ -17,18 +21,19 @@ export default function HistoryView({ onClickItem }: HistoryViewProps) {
   const [selectedItem, setSelectedItem] = useState<HistoryItem | null>(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [take, setTake] = useState(5);
+  // const [take, setTake] = useState(5);
+  const take = 5;
   const [ip, setIp] = useState("");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
-  const [sortBy, setSortBy] = useState("ip");
+  // const [sortBy, setSortBy] = useState("ip");
   const [desc, setDesc] = useState(false);
 
   useEffect(() => {
     fetchList();
 
     // eslint-disable-next-line
-  }, [page, take, ip, from, to, sortBy, desc]);
+  }, [page, take, ip, from, to, desc, searchIp]);
 
   useEffect(() => {
     setPage(1);
@@ -50,7 +55,7 @@ export default function HistoryView({ onClickItem }: HistoryViewProps) {
         ip,
         from,
         to,
-        sortBy,
+        // sortBy,
         desc: String(desc),
         skip: String((page - 1) * take),
         take: String(take),
@@ -69,7 +74,7 @@ export default function HistoryView({ onClickItem }: HistoryViewProps) {
   }
 
   function handleSelect(id: string, checked: boolean) {
-    setSelectedIds(prev => {
+    setSelectedIds((prev) => {
       const next = new Set(prev);
       if (checked) next.add(id);
       else next.delete(id);
@@ -105,41 +110,62 @@ export default function HistoryView({ onClickItem }: HistoryViewProps) {
   }
 
   return (
-    <div className="max-w-2xl mx-auto mt-8">
-      <div className="mb-4 flex gap-2">
-        <input
-          type="text"
-          placeholder="Search IP"
-          value={ip}
-          onChange={e => setIp(e.target.value)}
-          className="border p-1 rounded"
-        />
-        <input
-          type="date"
-          value={from}
-          onChange={e => setFrom(e.target.value)}
-          className="border p-1 rounded"
-        />
-        <input
-          type="date"
-          value={to}
-          onChange={e => setTo(e.target.value)}
-          className="border p-1 rounded"
-        />
-        <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="border p-1 rounded">
-          <option value="ip">IP</option>
-        </select>
-        <select value={desc ? "desc" : "asc"} onChange={e => setDesc(e.target.value === "desc")} className="border p-1 rounded">
-          <option value="asc">Asc</option>
-          <option value="desc">Desc</option>
-        </select>
-        <select value={take} onChange={e => setTake(Number(e.target.value))} className="border p-1 rounded">
-          <option value={5}>5</option>
-          <option value={10}>10</option>
-        </select>
+    <div className="w-full mx-auto mt-8">
+      <div className="mb-4 flex gap-2 w-full justify-between">
+        <div className="flex gap-2">
+          <input
+            type="text"
+            placeholder="Search IP"
+            value={ip}
+            onChange={(e) => setIp(e.target.value)}
+            className="border p-1 rounded"
+          />
+          <input
+            type="date"
+            value={from}
+            onChange={(e) => setFrom(e.target.value)}
+            className="border p-1 rounded"
+          />
+          <input
+            type="date"
+            value={to}
+            onChange={(e) => setTo(e.target.value)}
+            className="border p-1 rounded"
+          />
+        </div>
+        <div className="flex gap-2">
+          {/* <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="border p-1 rounded"
+          >
+            <option value="ip">IP</option>
+          </select> */}
+          <select
+            value={desc ? "desc" : "asc"}
+            onChange={(e) => setDesc(e.target.value === "desc")}
+            className="border p-1 rounded"
+          >
+            <option value="asc">Asc</option>
+            <option value="desc">Desc</option>
+          </select>
+          {/* <select
+            value={take}
+            onChange={(e) => setTake(Number(e.target.value))}
+            className="border p-1 rounded"
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+          </select> */}
+        </div>
       </div>
       {showDelete && (
-        <button onClick={handleDelete} className="mb-2 bg-red-500 text-white px-3 py-1 rounded">Delete Selected</button>
+        <button
+          onClick={handleDelete}
+          className="mb-2 bg-red-500 text-white px-3 py-1 rounded self-end"
+        >
+          Delete Selected
+        </button>
       )}
       {error && <div className="text-red-500 mb-2">{error}</div>}
       <HistoryList
@@ -156,7 +182,9 @@ export default function HistoryView({ onClickItem }: HistoryViewProps) {
         >
           Prev
         </button>
-        <span>Page {page} / {Math.ceil(total / take) || 1}</span>
+        <span>
+          Page {page} / {Math.ceil(total / take) || 1}
+        </span>
         <button
           onClick={() => handlePageChange(page + 1)}
           disabled={page * take >= total}
@@ -165,11 +193,6 @@ export default function HistoryView({ onClickItem }: HistoryViewProps) {
           Next
         </button>
       </div>
-      {/* {selectedItem && (
-        <div className="mt-6">
-          <GeoInfoView ip={selectedItem.ip} />
-        </div>
-      )} */}
     </div>
   );
 }

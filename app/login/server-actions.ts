@@ -1,5 +1,5 @@
 "use server";
-import { signIn } from "../auth";
+import { signIn, signOut } from "../auth";
 
 export default async function loginAction(username: string, password: string) {
   try {
@@ -11,10 +11,22 @@ export default async function loginAction(username: string, password: string) {
     });
     console.log("Sign in response:", res);
     if (res?.error) {
-      return { error: "Login failed. Please check your credentials and try again." };
+      return {
+        error: "Login failed. Please check your credentials and try again.",
+      };
     }
     return { success: true };
   } catch (err) {
-    return { error: "Login failed. Please check your credentials and try again." };
+    return {
+      error: "Login failed. Please check your credentials and try again.",
+    };
+  }
+}
+
+export async function signOutAction() {
+  try {
+    await signOut();
+  } catch (err) {
+    console.error("Sign out failed:", err);
   }
 }
