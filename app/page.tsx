@@ -1,6 +1,7 @@
 
 import { auth, signOut } from "./auth";
 import GeoInfoView from "./components/GeoInfoView";
+import HistoryView from "./components/HistoryView";
 
 export default async function HomePage() {
 
@@ -25,14 +26,16 @@ export default async function HomePage() {
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-96 flex flex-col items-center">
+      <div className="bg-white p-8 rounded shadow-md flex flex-col items-center">
+        <nav className="w-full flex justify-end mb-4">
+          <button type="submit" className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Sign Out</button>
+        </nav>
         <h1 className="text-3xl font-bold mb-4">Welcome, {session.user?.name}!</h1>
-        <GeoInfoView />
-        <div className="flex gap-4">
-          <form action={handleSignOut}>
-            <button type="submit" className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Sign Out</button>
-          </form>
+        <div className="w-full mb-6">
+          <GeoInfoView />
         </div>
+        
+
       </div>
     </main>
   );
