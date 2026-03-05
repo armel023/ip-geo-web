@@ -13,7 +13,9 @@ export const {handlers, signIn, signOut, auth }= NextAuth({
       async authorize(credentials) {
         console.log("Attempting to authenticate user:", credentials?.username);
         try {
-          const res = await fetch(`${apiUrl}/api/Login`, {
+          const url = `${apiUrl}api/Login`;
+          console.log("Authentication URL:", url);
+          const res = await fetch(url, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

@@ -15,5 +15,4 @@ export async function deleteHistory(ids: string[]) {
     body: JSON.stringify(ids),
   });
   if (!res.ok) throw new Error("Failed to delete history");
-  return res.json();
 }
