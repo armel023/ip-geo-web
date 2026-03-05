@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { UserData } from "@/app/_dtos/user-data";
 
+const apiUrl = process.env.IP_GEO_API_URL || "http://localhost:5069";
 export const {handlers, signIn, signOut, auth }= NextAuth({
   providers: [
     CredentialsProvider({
@@ -12,7 +13,7 @@ export const {handlers, signIn, signOut, auth }= NextAuth({
       async authorize(credentials) {
         console.log("Attempting to authenticate user:", credentials?.username);
         try {
-          const res = await fetch("http://localhost:5069/api/Login", {
+          const res = await fetch(`${apiUrl}/api/Login`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

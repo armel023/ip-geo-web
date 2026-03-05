@@ -1,6 +1,6 @@
 "use server";
 
-const apiUrl = process.env.API_URL || "http://localhost:5069/";
+const apiUrl = process.env.IP_GEO_API_URL || "http://localhost:5069/";
 
 export default async function fetchHistory(searchParams: { ip?: string; from?: string; to?: string; desc?: boolean; skip?: number; take?: number }) {
   const res = await fetch(apiUrl + "api/history?" + new URLSearchParams(searchParams as Record<string, string>));
