@@ -8,12 +8,10 @@ import { useEffect, useState } from "react";
 import GeoInfoCard from "./GeoInfoCard";
 import HistoryView from "./HistoryView";
 import { GeoInfo } from "./IGeoInfo";
+import fetchIpInfo, { fetchMyIpInfo } from "@/server-action/ip-info-server-api";
 
-interface GeoInfoViewProps {
-  ip?: string;
-}
 
-export default function GeoInfoView({ ip: propIp }: GeoInfoViewProps) {
+export default function GeoInfoView() {
   const [geo, setGeo] = useState<GeoInfo | null>(null);
   const [searchIp, setSearchIp] = useState("");
   const [error, setError] = useState("");
@@ -49,13 +47,7 @@ export default function GeoInfoView({ ip: propIp }: GeoInfoViewProps) {
     }
     setLoading(true);
     try {
-      let url = "/api/ipinfo";
-      if (searchIp) {
-        url += `?ip=${encodeURIComponent(searchIp)}`;
-      }
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("Not found");
-      const data = await res.json();
+      const data = await fetchIpInfo(searchIp);
       setGeo(data);
       setAddedIp(searchIp);
     } catch (e) {
@@ -68,27 +60,12 @@ export default function GeoInfoView({ ip: propIp }: GeoInfoViewProps) {
   useEffect(() => {
     async function fetchGeo() {
       setError("");
-      if (propIp) {
+if (searchIp === "") {
         setLoading(true);
         try {
-          const url = `/api/ipinfo?ip=${encodeURIComponent(propIp)}`;
-          const res = await fetch(url);
-          if (!res.ok) throw new Error("Not found");
-          const data = await res.json();
+          const data = await fetchMyIpInfo();
           setGeo(data);
-          setSearchIp(propIp);
-          setAddedIp(propIp);
-        } catch (e) {
-          setError("Failed to fetch IP info.");
-        } finally {
-          setLoading(false);
-        }
-      } else if (searchIp === "") {
-        setLoading(true);
-        try {
-          const res = await fetch("/api/ipinfo");
-          if (!res.ok) throw new Error("Not found");
-          const data = await res.json();
+          setAddedIp(data.ip);
           setGeo(data);
           setAddedIp(data.ip);
         } catch (e) {
@@ -99,7 +76,7 @@ export default function GeoInfoView({ ip: propIp }: GeoInfoViewProps) {
       }
     }
     fetchGeo();
-  }, [searchIp, propIp]);
+  }, [searchIp]);
   return (
     <div className="flex flex-col md:flex-row gap-8 w-full min-h-screen p-6 md:p-10 bg-gradient-to-br from-blue-50 to-gray-100">
       {/* Left side: Form, GeoInfoCard, History */}

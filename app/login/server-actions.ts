@@ -24,9 +24,5 @@ export default async function loginAction(username: string, password: string) {
 }
 
 export async function signOutAction() {
-  try {
-    await signOut();
-  } catch (err) {
-    console.error("Sign out failed:", err);
-  }
+  await signOut({ redirectTo: "/login" });
 }

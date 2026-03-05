@@ -1,4 +1,4 @@
-import { auth, signOut } from "./auth";
+import { auth } from "./auth";
 import GeoInfoView from "./components/GeoInfoView";
 import SignOutButton from "./components/SignOutButton";
 

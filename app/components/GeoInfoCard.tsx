@@ -1,15 +1,5 @@
 import React from "react";
-
-export interface GeoInfo {
-  ip: string;
-  city: string;
-  region: string;
-  country: string;
-  loc: string;
-  org: string;
-  postal: string;
-  timezone: string;
-}
+import { GeoInfo } from "./IGeoInfo";
 
 interface GeoInfoCardProps {
   geo: GeoInfo;

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import HistoryList, { HistoryItem } from "./HistoryList";
 import { GeoInfo } from "./IGeoInfo";
 import { mapIpInfoJson } from "./mapIpInfoJson";
+import fetchHistory, { deleteHistory } from "@/server-action/history-server-api";
 
 interface HistoryViewProps {
   searchIp?: string;
@@ -51,20 +52,16 @@ export default function HistoryView({
     setLoading(true);
     setError("");
     try {
-      const params = new URLSearchParams({
+      const res = await fetchHistory({
         ip,
         from,
         to,
-        // sortBy,
-        desc: String(desc),
-        skip: String((page - 1) * take),
-        take: String(take),
+        desc,
+        skip: (page - 1) * take,
+        take,
       });
-      const res = await fetch(`/api/history?${params.toString()}`);
-      if (!res.ok) throw new Error("Failed to fetch history");
-      const data = await res.json();
-      setItems(data.items);
-      setTotal(data.total);
+      setItems(res.items);
+      setTotal(res.total);
       setSelectedIds(new Set());
     } catch (e) {
       setError("Failed to fetch history");
@@ -87,12 +84,7 @@ export default function HistoryView({
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/history", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(Array.from(selectedIds)),
-      });
-      if (!res.ok) throw new Error("Failed to delete");
+      await deleteHistory(Array.from(selectedIds));
       await fetchList();
     } catch (e) {
       setError("Failed to delete selected items");
@@ -132,15 +124,9 @@ export default function HistoryView({
             onChange={(e) => setTo(e.target.value)}
             className="border p-1 rounded"
           />
+
         </div>
         <div className="flex gap-2">
-          {/* <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="border p-1 rounded"
-          >
-            <option value="ip">IP</option>
-          </select> */}
           <select
             value={desc ? "desc" : "asc"}
             onChange={(e) => setDesc(e.target.value === "desc")}
@@ -149,24 +135,18 @@ export default function HistoryView({
             <option value="asc">Asc</option>
             <option value="desc">Desc</option>
           </select>
-          {/* <select
-            value={take}
-            onChange={(e) => setTake(Number(e.target.value))}
-            className="border p-1 rounded"
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-          </select> */}
         </div>
       </div>
-      {showDelete && (
+      <div className="flex justify-end">
         <button
-          onClick={handleDelete}
-          className="mb-2 bg-red-500 text-white px-3 py-1 rounded self-end"
+            onClick={handleDelete}
+            className="mb-2 bg-red-500 text-white px-3 py-1 rounded self-end"
         >
-          Delete Selected
+            Delete Selected
         </button>
-      )}
+      </div>
+
+
       {error && <div className="text-red-500 mb-2">{error}</div>}
       <HistoryList
         items={items}
