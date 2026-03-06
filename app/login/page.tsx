@@ -7,12 +7,17 @@ import loginAction from "./server-actions";
 export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  async function action(formData: FormData) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     setError("");
+    setLoading(true);
+    const formData = new FormData(e.currentTarget);
     const username = formData.get("username") as string;
     const password = formData.get("password") as string;
     const result = await loginAction(username, password);
+    setLoading(false);
     if (result?.error) {
       setError(result.error);
     } else {
@@ -62,7 +67,7 @@ export default function LoginPage() {
           </section>
 
           <form
-            action={action}
+            onSubmit={handleSubmit}
             className="flex flex-col gap-6 rounded-2xl border border-slate-200/60 bg-white p-8 shadow-xl shadow-sky-100 dark:border-slate-800 dark:bg-slate-900/80 dark:shadow-none"
           >
             <div className="space-y-2">
@@ -104,9 +109,10 @@ export default function LoginPage() {
 
             <button
               type="submit"
+              disabled={loading}
               className="inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 px-4 py-3 text-base font-semibold text-white shadow-lg shadow-sky-500/30 transition hover:translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900"
             >
-              Sign In
+              {loading ? "Signing in..." : "Sign In"}
             </button>
 
             <p className="text-center text-xs text-slate-400 dark:text-slate-500">
