@@ -15,7 +15,8 @@ interface MapProps {
 }
 
 const defaults = {
-  zoom: 30,
+  zoom: 15,
+  maxZoom: 19,
 };
 
 export default function Map({
@@ -28,7 +29,7 @@ export default function Map({
     const map = useMap();
 
     useEffect(() => {
-      map.setView(center);
+      map.setView(center, map.getZoom());
     }, [center, map]);
 
     return null;
